@@ -1,0 +1,35 @@
+{% extends 'base_layout.html' %}
+{% load static %}
+{% block content %}
+<div class="row">
+    <div class="col col-xs-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3 article">
+      <div class="post-details border-bottom py-4">
+        <span><b>{{article.author.username}} </b>{{article.body}}</span>
+        <a class="btn btn-success float-right" href="{% url 'articles:list' 'all' %}">Back to Home</a>
+      </div>
+    <div class="comments pt-4" style="height:400px;overflow:auto;">
+        <p><b>All Comments</b></p>
+        {% for comment in article.comments_set.all %}
+          <p><b>{{comment.person.username}}: </b>{{comment.text}}</p>
+        {% endfor %}
+      </div>
+    </div>
+    </div>
+<div class="row">
+    <div class="col-xs-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+        <form class="form-inline" id="comment-form">
+          <input type="text" placeholder="New Comment..." name="comment" id="comment">
+          <button type="submit" class="btn btn-danger"><i class="far fa-paper-plane"></i></button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+  post_id=parseInt('{{article.id}}');
+  username='{{request.user.username}}';
+</script>
+<script type="text/javascript" src="{% static 'articles/comment.js' %}">
+</script>
+{% endblock %}

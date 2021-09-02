@@ -1,0 +1,39 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block title %}
+    {% endblock %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'test.css' %}">
+</head>
+<body>
+  <div class="mybrand text-center py-2 bg-danger">
+      <h3><a href='{% url "home" %}' class="text-white">PaperPlane <i class="far fa-paper-plane"></i></a></h3>
+  </div>
+            <ul class="mt-1 nav justify-content-center">
+                {% if user.is_authenticated %}
+                <li class="mx-1"><a class="nav-link btn btn-primary" href="{% url 'accounts:profile' request.user.id %}">Your Profile </a></li>
+                <li class="mx-1"><a class="nav-link btn btn-success" href="{% url 'articles:create' %}">New Post  <i class="fas fa-plus"></i></a></li>
+                {% if request.user.is_superuser %}
+                <li class="mx-1"><a class="nav-link btn btn-warning" href="{% url 'articles:list' 'pending' %}">Pending Posts</a></li>
+                {% endif %}
+                <li class="mx-1"><a class="nav-link btn btn-danger" href="{% url 'accounts:logout' %}">Logout</a></li>
+                {% else %}
+                <li class="mx-1"><a class="nav-link btn btn-primary" href="{% url 'accounts:signup' %}">Sign up</a></li>
+                <li class="mx-1"><a class="nav-link btn btn-success" href="{% url 'accounts:login' %}">Login</a></li>
+                {% endif %}
+            </ul>
+            <div class="results">
+
+            </div>
+  <div class="container wrapper">
+    {% block content %}
+    {% endblock %}
+</div>
+{% block js %}
+{% endblock %}
+</body>
+</html>

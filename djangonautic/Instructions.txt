@@ -1,0 +1,180 @@
+Base folder = 1st djangonautic Project folder = 2nd djangonautic
+To create a project: django-admin startproject projectName
+
+to start the server: python manage.py startserver
+
+create a templates folder for html (in the base dir).
+to instruct django to look into this templates folder, go to settings.py and in the templates list include the value templates inside dirs=[].
+so it would now look like. dirs=['templates']
+this templates folder is used for only global templates.
+path('url',function_name,name="anyname") this name can be used to call the link inside the html as {% url 'name_of_link' %}
+
+In django we usually split one project int a number or apps. Each app is now a folder with its own templates,urls.py,views.py
+to create an app: python manage.py startapp appname ( inside this we dont get a urls.py so we manually create it.)
+once the app is created, go to settings.py and include the appname in installed apps list.
+
+inside this app we create a new templates folder. Inside this again we create a newfolder that has the same name as the app.
+This acts as a namespace so as to avoid any kind of confusion if we have templates with same names inside the other templates folders.
+
+The  project folder acts as the root for all apps and the urls for all the apps are called from the urls.py in the project folder.
+to include the urls from other apps we import include. In the global urls.py (in the project folder) we create a new path('appname/',include('appname.urls')). 
+Say the urls inside the app->urls.py are '/' , 'home/'. These are always called as 'app/' , 'app/home/'
+
+Models:
+models represent a table in the database.
+we can have multiple models(tables) for an app. All these models are created using classes. These classes inherit models.Model
+Each app has a models.py file inside which we create the models.
+we also include a __str__ method so that we get a meaningful representation of a obj when we read all the objs using classname.objects.all()
+the method takes self as a parameter and then we can return something like the title so that objects.all() returns all the titles
+
+Migrations:
+all the models create need to be mapped to the database. Migrations are used for this.
+When the server is started we see that some Migrations provided by django need to be migrated.
+This is done by python manage.py migrate
+
+Once the models are created in the models.py, we need to migrate them.
+so first we create the migration by python manage.py makemigrations
+and then do python manage.py migrate
+This has to be done everytime we create a new model or when we make changes to a model so that a corresponding table can be created in the database.
+
+Interacting with the database:
+django ORM is used.
+to interact with the db we need to open the shell. To open it do: python manage.py shell
+Once the shell opens we need to import the model created. from appname.models import classname eg) from articles.models import Article.
+
+Reading:
+classname.objects.all() returns all the records in the table. Each record is an object.
+so to insert we create an object and set all the fields either using dot notation or by passing it in the constructor.
+Article.objects.all() return all from the Article model.
+Article.objects.all().order_by(col name) orders the data using that col. 
+Article.objects.get(field=value) eg) Article.objects.get(slug='hello-world')
+
+Inserting:
+create an object with all the fields as parameters during obj creation
+This object needs to be saved for it to show up when we read data.
+To save the object to the db as a record we do objname.save()
+
+The Djago Admin:
+django comes with a default url /admin/ from where the admin can manage his site. (see in urls.py in the project folder).
+to access the admin page we need a username and password. To do so, python manage.py createsuperuser and enter the username password.
+This can now be entered in the /admin/ url to login.
+username:karan email:karanmahesh1905@gmail.com password:samsungchamp1
+
+The admin can also access the database from here. But we need to make sure that the models created show up here.
+Each app has its own admin file. Go to the admin file and then import the models from the models file.(see admin.py in articles app)
+then do admin.site.register(model name) eg) admin.site.register(Article)
+now the articles model shows up on the admin site.
+now we can add any data to the table using the admin site.
+
+Model methods:
+New functions can be added to the model class and can be used to perform anything that we want.
+
+Static files:
+in production mode static files are usually fetched from another service like aws. This is where the files reside.
+but if the files are on our computer then to work with those files we need to import staticfiles_urlpatterns from django.cotrib.staticfiles.urls in urls.py in the project root (project folder.)
+then we do urlpatterns+=staticfiles_urlpatterns()
+then do to setting.py and do STATICFILES_DIRS=(
+    os.path.join(BASE_DIR,'static') #basedir is the base folder and static is the folder that holds the static files.
+)
+
+the static uri in settings refers to link where we can see the static file if we want to
+here it is /static/ so to see styles we go to localhost:8000/static/styles.css
+each app needs its own static folder for files that are specific for the app. However all these can be placed in the global folder wiht proper names to avoid conflict.
+to include the static file in html do {% load static %} and in the href of the link tag would be href="{% static 'path/filename.css' %}"
+
+Extending templates:
+same as flask {% block content %} {% endblock %}
+then in the child template do {% extends 'base.html' %}
+
+URL variables:
+similar to flask
+any url can take extra info '/articles/<text>/' means that to the url /articles/ any thing can be added and this can be takes as a parameter in the view function.
+add that url to the app's urls.py as path('<text>/',views.functionname,name="somename")
+inside urls.py for all apps it is better to give app_name="app_name" so that when calling links using url if there are urls with same name in other apps there is no confusion and the links can then be called as url 'appname:linkname'
+the link for this can be generated as {% url 'appname.somename' text=property %}
+
+Uploading media:
+go to settings.py and include the media_url and media_root
+MEDIA_URL='/media/' this is the url where we can view our files.
+MEDIA_ROOT=os.path.join(BASE_DIR,'media') this is the path where django stores the uploaded images. This folder is automatically created when the image is uploaded.
+then go to urls.py and then include the import statements given below.
+from django.conf.urls.static import static
+from django.conf import settings
+then in the last line of urls.py do urlpatterns+=static(settings.MEDIA_URL,document_root=MEDIA_ROOT)
+to access the url of the image from the db we objname.fieldname.url eg) article.thumb.url. This is inserted into the src of the <img>.
+
+Login and signup forms:
+UserCreationForm():
+Django comes with authentication so most of the work is done by django, like checking if a username already exists, does the password and the confirm password match etc.
+Even the forms for all these are created by django. from django.contrib.auth.forms import UserCreationForm
+then we create an instance of the UserCreationForm and then send it to the template in the render function.
+include the var inside the form tag. Also inside the form tag we need to include a {% csrf_token %}. This tells the server that the request was sent from our application and not from somewhere else.
+Without the token this would not work.
+We still have to include the submit button.
+
+Validating the form with django:
+if request.method==POST then create another instance of UserCreationForm and pass to it request.POST to asign the data to this new form.
+to validate we do form.is_valid() and if it is valid then we proceed to saving the user to the database which is done by form.save().
+
+AuthenticationForm():
+this creates a login form and is used the same way as UserCreationForm().
+When the request.POST is passed to it we need to pass it as data=request.POST because this isnt the 1st parameter by default.
+the same is_valid() can be used for validation.
+
+Login:
+from django.contrib.auth.import login
+to get the user who tries to login. do form=AuthenticationForm(request.POST) then user=form.get_user() and then do login(request,user).
+
+Logout:
+from django.contrib.auth.import logout
+while logging out it is recommended to use a post request so that the logout link cannot be called like localhost:8000/logout.
+create a form and place a submit button that acts as logout button and method of the form is post.
+logout(request)
+
+Requiring login in all pages:
+from django.contrib.auth.decorators import login_required
+and then add this decorator to any function(view) that can only be accessed if user is logged in.
+
+Redirecting after login:
+if we try to access the create article page without logging in we are redirected to the login page.
+after login we redirected to the article list page and not to the create page.
+whenever we are redirected to the login page from another page so that the user can login, we have additional parameter in the url called next which holds the page that we came from.
+to get redirected to page where we initially wanted to go do the following:
+go to login.html
+if request.GET.next then include a hidden input tag with value request.GET.next (this holds the page name where we came from)
+then in login view (function) we check if when the form was submitted we got a next parameter.
+if flask we get form data as request.form['name attribute value'] or request.forms.get(name attribute value) but in django we do request.POST.get(name attribute value) or request.POST[name attribute value]
+so now we do if 'next' in request.POST then redirect(request.POST.get('next')) else if this next param doesnt exist then go back to the home or index page(here the article list page)
+
+Model form:
+Just like UserCreationForm and AuthenticationForm we can create forms for our own db tables.
+create a forms.py in the app. This holds all the forms
+from django import forms
+from . import models
+class name(forms.ModelForm):
+class meta:
+model=models.Article #this indicates the table for which we need the form
+fields=['title','slug','body','thumb'] #this indicates the fields that we want in the form. Date is left out as it is added automatically.
+
+then inside the view we can now create the instance of this form just liek UserCreationForm and AuthenticationForm and continue as usual
+if we have file uploads in the form then we pass request.POST and request.FILES inside the instance while Validating.
+
+Foreign keys:
+to add a Foreign key to a model do field=models.ForeignKey(TheOtherModelName,on_delete=models.CASCADE)
+CASCADE indicates that when the record from TheOtherModelName is deleted the associated records from this table are also deleted.
+always makemigrations when changes are made to a model
+
+Login status:
+we may need to show users different content based on login status. eg) login button if user is not logged in and logout button if user is logged in.
+in the html template we can do {% if user.is_authenticated %} and then display content accordingly.
+
+display form along with the existing data:
+eg) when trying to edit a post.
+we get the obj to be modified using ModelName.objects.get(condition) and then pass this to the form as FormModelName(instance=obj). #displays form with current data 
+to save the data when POST request is given we do FormModelName(request.POST,instance=obj) here we need to get the obj again.
+and then do form.save() to modify the existing obj.
+
+Note:
+after dealing with post data if page is refreshed then the same thing is posted again and this causes the db to be updated again for the same value.
+so always return HttpResponseRedirect(reverse('polls:results', args=(question.id,))) instead of render or HttpResponse
+reverse has 2 args. First is the link name(like in {%url%}) and the next one is the url variables that are  needed. 

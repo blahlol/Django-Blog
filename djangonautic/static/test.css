@@ -1,0 +1,115 @@
+.article{
+  background:white;
+}
+body{
+  background: rgb(250, 250, 250);
+}
+nav a{
+    color:white;
+}
+.row{
+    margin-top:30px;
+    margin-bottom:30px;
+}
+
+.article-options button{
+    border:none;
+    background:white;
+}
+.like{
+color:lightgrey;
+}
+.liked{
+color:red;
+}
+#comment-form input[type=text]{
+  padding: 5px;
+  border:1px solid crimson;
+  width: 80%;
+  outline:none;
+}
+#comment-form input[type=text]:focus{
+  border-bottom:2px solid crimson;
+  outline:none;
+}
+.mybrand a:hover{
+  text-decoration: none;
+}
+nav a:hover{
+color:lightgrey;
+}
+.site-form input, .site-form textarea{
+  display:block;
+}
+.site-form label,.site-form input[type=submit]{
+  margin-top:20px;
+}
+.site-form{
+border:2px solid crimson;
+padding:0 30px;
+
+}
+.site-form input[type=text],textarea,.site-form input[type=password]{
+  padding: 5px;
+  border:1px solid crimson;
+  width: 80%;
+  outline:none;
+}
+.site-form input[type=text]:focus,textarea:focus,.site-form input[type=password]:focus{
+  border-bottom:2px solid crimson;
+  outline:none;
+}
+.site-form input[type=submit],.site-form input[type=file]{
+  padding:10px;
+  color:white;
+  background:crimson;
+  border:1px solid crimson;
+  border-radius:5px;
+  margin-bottom: 20px;
+}
+h1,h2,h3,h4,h5,h6{
+color:crimson;
+}
+input.search{
+  outline:none;
+  padding:6px;
+  border:1px solid crimson;
+  display:block;
+  width:100%;
+  border-radius: 10px;
+
+}
+input.search:focus{
+
+    border:1px solid crimson;
+    border-bottom:2px solid crimson;
+    outline:none;
+}
+.searchForm{
+  width:50%;
+  margin:auto;
+}
+.searchResults{
+  border-radius:10px;
+  background:white;
+  margin-top:10px;
+  border:1px solid crimson;
+ padding:10px;
+}
+.searchResults a{
+  color:crimson;
+  text-decoration:none;
+}
+.searchResults hr{
+margin-bottom:0;
+}
+
+.userprofile{
+  color:white;
+  background:crimson;
+  border-radius:20px;
+  padding:10px;
+}
+.userprofile h2{
+  color:white;
+}

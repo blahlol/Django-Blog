@@ -1,0 +1,48 @@
+{% extends 'base_layout.html' %}
+{% load static %}
+{% block content %}
+<div class="row">
+    <div class="col col-xs-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+      <div class="userprofile">
+        <h2>{{user.username}}</h2>
+        <p>Joined: {{user.date_joined}}</p>
+        <p>{{length}} posts</p>
+      </div>
+    </div>
+</div>
+<div class="articles">
+    {% for article in articles %}
+    <div class="row">
+        <div class="col col-xs-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3 article">
+          <div class="article-title">
+            <span style='font-size:24px;color:crimson;' class="py-2">{{article.author.username}}</span>
+            {% if self %}
+            <a style="float:right;" class="btn text-danger" href="{% url 'articles:delete' article.id %}">Delete</a>
+            <a style="float:right;" class="btn text-danger mx-2" href="{% url 'articles:edit' article.id %}">Edit</a>
+            {% endif %}
+          </div>
+          <div class="article_image border-bottom">
+            <img src="{{article.thumb.url}}" style="width:100%">
+          </div>
+          <div class="article-body py-2">
+            <p><b>{{article.author.username}} </b>{{article.body}}</p>
+          </div>
+          <div class="article-options pb-3">
+            <span id='span{{article.id}}'>{{article.no_of_likes}}</span>
+            <button id="{{article.id}}" class="{{article.status}}"><i class="fas fa-heart"></i>{{article.status}}</button>
+            <button><a style="color: black; text-decoration: none;" href="{% url 'articles:comment' article.id %}"><i class="far fa-comments"></i> Comment</a></button>
+          </div>
+          <div class="article_comments">
+            {% for comment in article.get_comments %}
+            <p> <b>{{comment.person.username}}</b> {{comment.text}}</p>
+            {% endfor %}
+          </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block js%}
+<script src="{% static 'articles/like.js' %}"></script>
+{% endblock %}
